@@ -1,2 +1,2 @@
 # MusicalCompositionWebApp
-An app that allowed musicians to practice their composition skills following a Duolingo model with streaks, a premium feature, etc. Languages/tools include Python, JS, MongoDB, and more.
+An app that allowed musicians to practice their composition skills following a Duolingo model with streaks, a premium feature, etc. Languages/tools include Python, JS, MongoDB, etc.
