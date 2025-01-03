@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel ="stylesheet" href = "styles.css">
+    <link rel ="stylesheet" href ="{{ url_for('static', filename='styles.css') }}">
     <title>Sheet Music Software</title>
 </head>
 <body>
-    <img id="treble"; src="../images/treble.png"; alt="treble"; style="display: none;">
-    <img id="bass"; src="../images/bass.png"; alt="bass"; style="display: none;">
-    <img id="quarterNote"; src="../images/QuarterNote.png"; alt="quarterNote"; style="display: none;">
-    <img id="redQuarterNote"; src="../images/RedQuarterNote.png"; alt="quarterNote"; style="display: none;">
-    <img id="upsideDownQuarterNote"; src="../images/UpsideDownHalfNote.png"; alt="quarterNote"; style="display: none;">
-    <img id="redUpsideDownQuarterNote"; src="../images/RedUpsideDownQuarterNote.png"; alt="quarterNote"; style="display: none;">
-    <img id="halfNote"; src="../images/HalfNote.png"; alt="halfNote"; style="display: none;">
-    <img id ="redHalfNote"; src="../images/RedHalfNote.png"; alt="HalfNote"; style="display: none;">
-    <img id ="upsideDownHalfNote"; src="../images/UpsideDownHalfNote.png"; alt="redHalfNote"; style="display: none;">
-    <img id ="redUpsideDownHalfNote"; src="../images/redUpsideDownHalfNote.png"; alt="redHalfNote"; style="display: none;">
-    <img id ="wholeNote"; src="../images/WholeNote.png"; alt="wholeNote"; style="display: none;">
-    <img id ="redWholeNote"; src="../images/RedWholeNote.png"; alt="wholeNote"; style="display: none;">
+    <img id="treble"; src="../static/images/treble.png"; alt="treble"; style="display: none;">
+    <img id="bass"; src="../static/images/bass.png"; alt="bass"; style="display: none;">
+    <img id="quarterNote"; src="../static/images/QuarterNote.png"; alt="quarterNote"; style="display: none;">
+    <img id="redQuarterNote"; src="../static/images/RedQuarterNote.png"; alt="quarterNote"; style="display: none;">
+    <img id="upsideDownQuarterNote"; src="../static/images/UpsideDownHalfNote.png"; alt="quarterNote"; style="display: none;">
+    <img id="redUpsideDownQuarterNote"; src="../static/images/RedUpsideDownQuarterNote.png"; alt="quarterNote"; style="display: none;">
+    <img id="halfNote"; src="../static/images/HalfNote.png"; alt="halfNote"; style="display: none;">
+    <img id ="redHalfNote"; src="../static/images/RedHalfNote.png"; alt="HalfNote"; style="display: none;">
+    <img id ="upsideDownHalfNote"; src="../static/images/UpsideDownHalfNote.png"; alt="redHalfNote"; style="display: none;">
+    <img id ="redUpsideDownHalfNote"; src="../static/images/redUpsideDownHalfNote.png"; alt="redHalfNote"; style="display: none;">
+    <img id ="wholeNote"; src="../static/images/WholeNote.png"; alt="wholeNote"; style="display: none;">
+    <img id ="redWholeNote"; src="../static/images/RedWholeNote.png"; alt="wholeNote"; style="display: none;">
     <canvas id="theCanvas"; style = "border: 1px solid#000000; margin-top: 50px;"; width = "1420"; height = "450";>
     </canvas>
-    <button>a</button>
+    <button id = "fetchButton"> fetch data </button>
     <button onclick="convertToHalfNote()">half note</button>
     <p id="x">Current note:</p>
-    <script src="index.js"></script>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
 </body>
 </html>
