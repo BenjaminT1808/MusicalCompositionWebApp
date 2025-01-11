@@ -1,3 +1,44 @@
+var quarterNote = document.getElementById("quarterNote");
+quarterNote.onload =  function() {
+    drawObject();
+}
+var redQuarterNote = document.getElementById("redQuarterNote");
+redQuarterNote.onload = function() {
+    drawObject();
+}
+var upsideDownQuarterNote = document.getElementById("upsideDownQuarterNote");
+upsideDownQuarterNote.onload = function() {
+    drawObject();
+}
+var redUpsideDownQuarterNote = document.getElementById("redUpsideDownQuarterNote");
+redUpsideDownQuarterNote.onload = function() {
+    drawObject();
+}
+var halfNote = document.getElementById("halfNote");
+halfNote.onload = function() {
+    drawObject();
+}
+var redHalfNote = document.getElementById("redHalfNote");
+redHalfNote.onload = function() {
+    drawObject();
+}
+var upsideDownHalfNote = document.getElementById("upsideDownHalfNote");
+upsideDownHalfNote.onload = function() {
+    drawObject();
+}
+var redUpsideDownHalfNote = document.getElementById("redUpsideDownHalfNote");
+redUpsideDownHalfNote.onload = function() {
+    drawObject();
+}
+var wholeNote = document.getElementById("wholeNote");
+wholeNote.onload = function() {
+    drawObject();
+}
+var redWholeNote = document.getElementById("redWholeNote");
+redWholeNote.onload = function() {
+    drawObject();
+}
+
 let timeSigTop = 1;
 let timeSigBottom = 1;
 let selectedVoice = 'treble';
@@ -10,6 +51,12 @@ bars.push(90);
 let barDrawer = 75 + space
 const canvas = document.getElementById("theCanvas");
 const ctx = canvas.getContext("2d");
+let trebleNotes = [];
+let bassNotes = [];
+let selectedNote = 0;
+let measureFull = 0;
+let currentMeasure = 0;
+let place = 85;
 const noteMap = new Map();
 noteMap.set(157, 'A3');
 noteMap.set(147, 'B3');
@@ -41,6 +88,23 @@ noteMap.set(280, 'A2');
 noteMap.set(290, 'G2');
 noteMap.set(300, 'F2');
 noteMap.set(310, 'E2');
+
+const mapObject = Object.fromEntries(noteMap);
+
+fetch('http://127.0.0.1:5000/receive-hashmap', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',  // Set the content type to JSON
+    },
+    body: JSON.stringify(mapObject)  // Convert the hashmap to JSON and send it
+})
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);  // Log the response from Flask
+    })
+    .catch(error => {
+        console.error('Error:', error);  // Handle any errors
+    });
 
 
 function setUpNotes () {
@@ -115,7 +179,6 @@ function drawObject() {
     setUpNotes();
     // treble notes
     for (let i = 0; i < trebleNotes.length; i++) {
-        console.log(trebleNotes[i]);
         // THESE ARE RIGHT SIDE UP
         if (trebleNotes[i].length == 0.25 && trebleNotes[i].selected == false && trebleNotes[i].y > 77) {
             ctx.drawImage(quarterNote, trebleNotes[i].x, trebleNotes[i].y, trebleNotes[i].width, trebleNotes[i].height);
@@ -171,26 +234,11 @@ function drawObject() {
             ctx.drawImage(redWholeNote, bassNotes[i].x + 25, bassNotes[i].y + 42, bassNotes[i].width - 42, bassNotes[i].height - 42);
         }
         // THESE ARE UPSIDE DOWN
-        console.log(trebleNotes);
     }
 }
 
-let trebleNotes = [];
-let bassNotes = [];
-
-var quarterNote = document.getElementById("quarterNote");
-var redQuarterNote = document.getElementById("redQuarterNote");
-var upsideDownQuarterNote = document.getElementById("upsideDownQuarterNote");
-var redUpsideDownQuarterNote = document.getElementById("redUpsideDownQuarterNote");
-var halfNote = document.getElementById("halfNote");
-var redHalfNote = document.getElementById("redHalfNote");
-var upsideDownHalfNote = document.getElementById("upsideDownHalfNote");
-var redUpsideDownHalfNote = document.getElementById("redUpsideDownHalfNote");
-var wholeNote = document.getElementById("wholeNote");
-var redWholeNote = document.getElementById("redWholeNote");
-
 class Note {
-    constructor(x, y, width, height, length, selected, measure) {
+    constructor(x, y, width, height, length, selected, measure, value) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -198,13 +246,9 @@ class Note {
         this.length = length;
         this.selected = selected;
         this.measure = measure;
+        this.value = value;
     }
 }
-
-let selectedNote = 0;
-let measureFull = 0;
-let currentMeasure = 0;
-let place = 85;
 
 for (let i = 0; i < (numOfBars * timeSigTop); i ++) {
     let initTrebleNote = new Note(place, 117, 75, 75, (1/timeSigBottom), false, currentMeasure);
@@ -213,9 +257,6 @@ for (let i = 0; i < (numOfBars * timeSigTop); i ++) {
     trebleNotes.push(initTrebleNote);
     bassNotes.push(initBassNote);
     if (measureFull == barNoteLength) {
-        console.log(currentMeasure);
-        console.log(place);
-        console.log(bars[currentMeasure]);
         currentMeasure++;
         place = bars[currentMeasure];
         measureFull = 0;
@@ -223,11 +264,22 @@ for (let i = 0; i < (numOfBars * timeSigTop); i ++) {
     else {
         place += (barSpaceLength/timeSigTop);
     }
-    drawObject();
 }
+fetch('http://127.0.0.1:5000/receive-arrays', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ array1: trebleNotes, array2: bassNotes }) // Send the array as JSON
+})
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data); // Log Flask's response
+    })
+    .catch(error => {
+        console.error('Error:', error); // Handle any errors
+    });
 trebleNotes[selectedNote].selected = true;
-
-console.log(trebleNotes);
 
 function convertToHalfNote() {
     if (trebleNotes[selectedNote].length != 0.5) {
@@ -271,17 +323,73 @@ function moveObject(direction) {
         case 'up':
             if (selectedVoice == 'treble') {
                 trebleNotes[selectedNote].y -= 10;
+                fetch('http://127.0.0.1:5000/receive-arrays', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ array1: trebleNotes, array2: bassNotes }) // Send the updated array as JSON
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                    console.log('Success:', data); // Log Flask's response
+                    })
+                    .catch(error => {
+                        console.error('Error:', error); // Handle errors
+                    });
             }
             if (selectedVoice == 'bass') {
                 bassNotes[selectedNote].y -= 10;
+                fetch('http://127.0.0.1:5000/receive-arrays', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ array1: trebleNotes, array2: bassNotes }) // Send the updated array as JSON
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                    console.log('Success:', data); // Log Flask's response
+                    })
+                    .catch(error => {
+                        console.error('Error:', error); // Handle errors
+                    });
             }
             break;
         case 'down':
             if (selectedVoice == 'treble') {
                 trebleNotes[selectedNote].y += 10;
+                fetch('http://127.0.0.1:5000/receive-arrays', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ array1: trebleNotes, array2: bassNotes }) // Send the updated array as JSON
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                    console.log('Success:', data); // Log Flask's response
+                    })
+                    .catch(error => {
+                        console.error('Error:', error); // Handle errors
+                    });
             }
             if (selectedVoice == 'bass') {
                 bassNotes[selectedNote].y += 10;
+                fetch('http://127.0.0.1:5000/receive-arrays', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ array1: trebleNotes, array2: bassNotes }) // Send the updated array as JSON
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                    console.log('Success:', data); // Log Flask's response
+                    })
+                    .catch(error => {
+                        console.error('Error:', error); // Handle errors
+                    });
             }
             break;
     }
