@@ -235,6 +235,20 @@ function drawObject() {
         }
         // THESE ARE UPSIDE DOWN
     }
+    fetch('http://127.0.0.1:5000/receive-arrays', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ array1: trebleNotes, array2: bassNotes }) // Send the updated array as JSON
+    })
+        .then(response => response.json())
+        .then(data => {
+        console.log('Success:', data); // Log Flask's response
+        })
+        .catch(error => {
+            console.error('Error:', error); // Handle errors
+        });
 }
 
 class Note {
@@ -323,73 +337,17 @@ function moveObject(direction) {
         case 'up':
             if (selectedVoice == 'treble') {
                 trebleNotes[selectedNote].y -= 10;
-                fetch('http://127.0.0.1:5000/receive-arrays', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ array1: trebleNotes, array2: bassNotes }) // Send the updated array as JSON
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                    console.log('Success:', data); // Log Flask's response
-                    })
-                    .catch(error => {
-                        console.error('Error:', error); // Handle errors
-                    });
             }
             if (selectedVoice == 'bass') {
                 bassNotes[selectedNote].y -= 10;
-                fetch('http://127.0.0.1:5000/receive-arrays', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ array1: trebleNotes, array2: bassNotes }) // Send the updated array as JSON
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                    console.log('Success:', data); // Log Flask's response
-                    })
-                    .catch(error => {
-                        console.error('Error:', error); // Handle errors
-                    });
             }
             break;
         case 'down':
             if (selectedVoice == 'treble') {
                 trebleNotes[selectedNote].y += 10;
-                fetch('http://127.0.0.1:5000/receive-arrays', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ array1: trebleNotes, array2: bassNotes }) // Send the updated array as JSON
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                    console.log('Success:', data); // Log Flask's response
-                    })
-                    .catch(error => {
-                        console.error('Error:', error); // Handle errors
-                    });
             }
             if (selectedVoice == 'bass') {
                 bassNotes[selectedNote].y += 10;
-                fetch('http://127.0.0.1:5000/receive-arrays', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ array1: trebleNotes, array2: bassNotes }) // Send the updated array as JSON
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                    console.log('Success:', data); // Log Flask's response
-                    })
-                    .catch(error => {
-                        console.error('Error:', error); // Handle errors
-                    });
             }
             break;
     }

@@ -7,12 +7,13 @@ app.debug = True
 
 trebleNotes = []
 bassNotes = []
+noteMap = {}
 
 @app.route("/") 
 def  index():
     return render_template('index.html')
 
-@app.route('/receive-map', methods=['POST'])
+@app.route('/receive-hashmap', methods=['POST'])
 def receive_map():
     # Parse the JSON data into a Python dictionary
     data = request.get_json()
@@ -21,15 +22,8 @@ def receive_map():
         return jsonify({"error": "Invalid or missing JSON"}), 400
 
     # Access the values from the dictionary (formerly Map in JS)
-    name = data.get("name")
-    age = data.get("age")
-    city = data.get("city")
-
     return jsonify({
         "message": "Map received successfully",
-        "name": name,
-        "age": age,
-        "city": city
     })
 
 @app.route('/receive-arrays', methods=['POST'])
@@ -40,13 +34,14 @@ def receive_arrays():
 
     trebleNotes = data['array1']  # Extract the first array
     bassNotes = data['array2']  # Extract the second array
-    print(trebleNotes[0]['x'])
 
     return jsonify({
         "message": "Arrays received",
         "array1": trebleNotes,
         "array2": bassNotes
     }), 200 
+
+
 
 score = stream.Score()
 treble = stream.Part()
