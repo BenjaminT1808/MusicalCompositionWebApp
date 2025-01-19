@@ -36,5 +36,3 @@ para_fifth = checker.parallelFifths
 checker.checkConsecutivePossibilities(music21Stream=score, functionToApply=para_oct, debug=True)
 checker.checkConsecutivePossibilities(music21Stream=score, functionToApply=para_fifth, debug=True)
 
-
-score.show()

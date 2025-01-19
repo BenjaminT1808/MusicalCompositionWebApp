@@ -39,6 +39,7 @@ redWholeNote.onload = function() {
     drawObject();
 }
 
+let submitted = false;
 let timeSigTop = 1;
 let timeSigBottom = 1;
 let selectedVoice = 'treble';
@@ -235,7 +236,7 @@ function drawObject() {
         }
         // THESE ARE UPSIDE DOWN
     }
-    fetch('http://127.0.0.1:5000/receive-arrays', {
+fetch('http://127.0.0.1:5000/receive-arrays', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -419,6 +420,21 @@ function selectNote(direction) {
             drawObject();
             break;
     }
+}
+
+function submit() {
+    fetch('http://127.0.0.1:5000/check-notes')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Received Data:', data);
+
+                // Example: Add data to the DOM
+                const output = document.createElement('pre');
+                output.textContent = JSON.stringify(data, null, 2);
+                document.body.appendChild(output);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    document.getElementById('x').innerHTML = "Wrong notes: " 
 }
 
 drawObject();

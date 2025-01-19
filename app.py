@@ -1,6 +1,7 @@
 from music21 import *
 from music21.figuredBass import checker
 from flask import Flask, render_template, request, jsonify
+from markupsafe import escape
 
 app = Flask(__name__)
 app.debug = True
@@ -8,6 +9,14 @@ app.debug = True
 trebleNotes = []
 bassNotes = []
 noteMap = {}
+
+score = stream.Score()
+treble = stream.Part()
+bass = stream.Part()
+high = stream.Voice()
+low = stream.Voice()
+para_oct = checker.parallelOctaves
+para_fifth = checker.parallelFifths
 
 @app.route("/") 
 def  index():
@@ -20,6 +29,8 @@ def receive_map():
 
     if not data:
         return jsonify({"error": "Invalid or missing JSON"}), 400
+    
+    noteMap = data
 
     # Access the values from the dictionary (formerly Map in JS)
     return jsonify({
@@ -41,17 +52,21 @@ def receive_arrays():
         "array2": bassNotes
     }), 200 
 
-
-
-score = stream.Score()
-treble = stream.Part()
-bass = stream.Part()
-high = stream.Voice()
-low = stream.Voice()
-print("hi")
-
-para_oct = checker.parallelOctaves
-para_fifth = checker.parallelFifths
+@app.route('/check-notes', methods=['GET'])
+def check_notes():
+    for i in trebleNotes:
+        a = note.Note(noteMap.get(i[0]))
+        a.quarterLength = 4
+        high.append(a)
+    for i in bassNotes:
+        a = note.Note(noteMap.get(i[0]))
+        a.quarterLength = 4
+        low.append(a)
+    treble.append(high)
+    bass.append(low)
+    score.insert(0, treble)
+    score.insert(0, bass)
+    
 
 
 if __name__ == '__main__':
