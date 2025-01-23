@@ -1,6 +1,6 @@
 from music21 import *
 from music21.figuredBass import checker
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 from markupsafe import escape
 
 app = Flask(__name__)
@@ -30,7 +30,8 @@ def receive_map():
     if not data:
         return jsonify({"error": "Invalid or missing JSON"}), 400
     
-    noteMap = data
+    global noteMap
+    noteMap = {int(key): value for key, value in data.items() }
 
     # Access the values from the dictionary (formerly Map in JS)
     return jsonify({
@@ -43,7 +44,9 @@ def receive_arrays():
     if not data or 'array1' not in data or 'array2' not in data:
         return jsonify({"error": "Both arrays are required"}), 400
 
+    global trebleNotes
     trebleNotes = data['array1']  # Extract the first array
+    global bassNotes
     bassNotes = data['array2']  # Extract the second array
 
     return jsonify({
@@ -52,21 +55,29 @@ def receive_arrays():
         "array2": bassNotes
     }), 200 
 
-@app.route('/check-notes', methods=['GET'])
+@app.route('/check-notes/', methods=['GET'])
 def check_notes():
     for i in trebleNotes:
-        a = note.Note(noteMap.get(i[0]))
+        a = note.Note(noteMap.get(i.get('y')))
         a.quarterLength = 4
+        global high
         high.append(a)
     for i in bassNotes:
-        a = note.Note(noteMap.get(i[0]))
+        a = note.Note(noteMap.get(i.get('y')))
         a.quarterLength = 4
+        global low
         low.append(a)
+    global treble
     treble.append(high)
+    global bass
     bass.append(low)
+    global score
     score.insert(0, treble)
     score.insert(0, bass)
-    
+    print(checker.checkConsecutivePossibilities(music21Stream=score, functionToApply=para_oct, debug=True))
+    return jsonify ({
+    }), 500
+
 
 
 if __name__ == '__main__':

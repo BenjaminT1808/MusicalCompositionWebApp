@@ -423,7 +423,7 @@ function selectNote(direction) {
 }
 
 function submit() {
-    fetch('http://127.0.0.1:5000/check-notes')
+    fetch('http://127.0.0.1:5000/check-notes/')
             .then(response => response.json())
             .then(data => {
                 console.log('Received Data:', data);
