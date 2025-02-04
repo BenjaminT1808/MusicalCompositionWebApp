@@ -74,7 +74,14 @@ def check_notes():
     global score
     score.insert(0, treble)
     score.insert(0, bass)
-    print(checker.checkConsecutivePossibilities(music21Stream=score, functionToApply=para_oct, debug=True))
+    octResults = checker.checkConsecutivePossibilities(music21Stream=score, functionToApply=para_oct, debug=True)
+    fifthResults = checker.checkConsecutivePossibilities(music21Stream=score, functionToApply=para_fifth, debug=True)
+    for i in octResults:
+        partNumbers = [part.partNum for part in i.partsInvolved]
+        print(partNumbers)
+    for i in fifthResults:
+        partNumbers = [part.partNum for part in i.partsInvolved]
+        print(partNumbers)        
     return jsonify ({
     }), 500
 
