@@ -2,6 +2,9 @@ from music21 import *
 from music21.figuredBass import checker
 from flask import Flask, render_template, request, jsonify, session
 from markupsafe import escape
+import sys
+import io
+import re
 
 app = Flask(__name__)
 app.debug = True
@@ -17,6 +20,12 @@ high = stream.Voice()
 low = stream.Voice()
 para_oct = checker.parallelOctaves
 para_fifth = checker.parallelFifths
+
+# following block is done to modify output to console/turn output to regular string
+
+output_buffer = io.StringIO()
+original_stdout = sys.stdout
+sys.stdout = output_buffer
 
 @app.route("/") 
 def  index():
@@ -74,18 +83,18 @@ def check_notes():
     global score
     score.insert(0, treble)
     score.insert(0, bass)
-    octResults = checker.checkConsecutivePossibilities(music21Stream=score, functionToApply=para_oct, debug=True)
-    fifthResults = checker.checkConsecutivePossibilities(music21Stream=score, functionToApply=para_fifth, debug=True)
-    for i in octResults:
-        partNumbers = [part.partNum for part in i.partsInvolved]
-        print(partNumbers)
-    for i in fifthResults:
-        partNumbers = [part.partNum for part in i.partsInvolved]
-        print(partNumbers)        
+    checker.checkConsecutivePossibilities(music21Stream=score, functionToApply=para_oct, debug=True)
+    checker.checkConsecutivePossibilities(music21Stream=score, functionToApply=para_fifth, debug=True)
+    sys.stdout = original_stdout
+    values = output_buffer.getvalue().split("\n")
+    for i in range(len(values)):
+        if (values[i] == 'Function To Apply: parallelOctaves'):
+            a = i + 2
+            while (values[a] != 'No violations to report.' and values[a] != 'Function To Apply: parallelFifths'):
+                print(values[a])
+                a += 1
     return jsonify ({
     }), 500
-
-
 
 if __name__ == '__main__':
     app.run()
