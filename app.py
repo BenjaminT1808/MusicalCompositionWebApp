@@ -5,12 +5,16 @@ from markupsafe import escape
 import sys
 import io
 import re
+import ast
+
 
 app = Flask(__name__)
 app.debug = True
 
 trebleNotes = []
 bassNotes = []
+mistakes = []
+mistakeValues = []
 noteMap = {}
 
 score = stream.Score()
@@ -90,11 +94,17 @@ def check_notes():
     for i in range(len(values)):
         if (values[i] == 'Function To Apply: parallelOctaves'):
             a = i + 2
-            while (values[a] != 'No violations to report.' and values[a] != 'Function To Apply: parallelFifths'):
-                print(values[a])
+            while (values[a] != 'No violations to report.' and values[a] != 'Function To Apply: parallelFifths'):    
+                mistakes.append(values[a])
                 a += 1
-    return jsonify ({
-    }), 500
+            print(mistakes)
+            for j in range(len(mistakes)):
+                mistakes[j] = re.sub(r'\s+', ' ', mistakes[j])
+                tuple_strs = mistakes[j].split(') (')
+                cleaned_tuples = [ast.literal_eval(tup.replace('(', '').replace(')', ',')) for tup in tuple_strs]
+                mistakes[j] =(tuple(cleaned_tuples))
+            print(mistakes)
+    return jsonify (mistakes), 500
 
 if __name__ == '__main__':
     app.run()

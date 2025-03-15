@@ -40,8 +40,8 @@ redWholeNote.onload = function() {
 }
 
 let submitted = false;
-let timeSigTop = 2;
-let timeSigBottom = 2;
+let timeSigTop = 1;
+let timeSigBottom = 1;
 let selectedVoice = 'treble';
 let barNoteLength = (timeSigTop * (1/timeSigBottom));
 let numOfBars = 6;
@@ -434,7 +434,7 @@ function submit() {
                 document.body.appendChild(output);
             })
             .catch(error => console.error('Error fetching data:', error));
-    document.getElementById('x').innerHTML = "Wrong notes: " 
+    document.getElementById('x').innerHTML = "Wrong notes: "
 }
 
 drawObject();
