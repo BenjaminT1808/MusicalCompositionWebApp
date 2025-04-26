@@ -40,8 +40,8 @@ redWholeNote.onload = function() {
 }
 
 let submitted = false;
-let timeSigTop = 1;
-let timeSigBottom = 1;
+let timeSigTop = 2;
+let timeSigBottom = 2;
 let selectedVoice = 'treble';
 let barNoteLength = (timeSigTop * (1/timeSigBottom));
 let numOfBars = 6;
@@ -58,6 +58,7 @@ let selectedNote = 0;
 let measureFull = 0;
 let currentMeasure = 0;
 let place = 85;
+let wrong = [];
 const noteMap = new Map();
 noteMap.set(157, 'A3');
 noteMap.set(147, 'B3');
@@ -89,6 +90,9 @@ noteMap.set(280, 'A2');
 noteMap.set(290, 'G2');
 noteMap.set(300, 'F2');
 noteMap.set(310, 'E2');
+const voiceMap = new Map()
+voiceMap.set(1, 'treble')
+voiceMap.set(2, 'bass')
 
 const mapObject = Object.fromEntries(noteMap);
 
@@ -427,14 +431,36 @@ function submit() {
             .then(response => response.json())
             .then(data => {
                 console.log('Received Data:', data);
+                submitted = true;
+                if (selectedVoice == 'treble') {
+                    trebleNotes[selectedNote].selected = false;
+                }
+                else {
+                    bassNotes[selectedNote].selected = false;
+                }
 
-                // Example: Add data to the DOM
-                const output = document.createElement('pre');
-                output.textContent = JSON.stringify(data, null, 2);
-                document.body.appendChild(output);
+                // Manipulate Canvas
+                for (i = 0; i < data.length; i ++) {
+                    console.log(data.length)
+                    selectedVoice = voiceMap.get(data[i][2][0])
+                    if (selectedVoice == 'treble') {
+                        trebleNotes[data[i][0][0]/4].selected = true;
+                    }
+                    if (selectedVoice == 'bass') {
+                        bassNotes[data[i][0][0]/4].selected = true;
+                    }
+                    selectedVoice = voiceMap.get(data[i][2][1])
+                    if (selectedVoice == 'treble') {
+                        trebleNotes[data[i][0][0]/4].selected = true;
+                    }
+                    if (selectedVoice == 'bass') {
+                        bassNotes[data[i][0][0]/4].selected = true;
+                    }
+                }
+                drawObject();
             })
             .catch(error => console.error('Error fetching data:', error));
-    document.getElementById('x').innerHTML = "Wrong notes: "
+    document.removeEventListener('keydown', (e))
 }
 
 drawObject();

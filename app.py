@@ -9,7 +9,6 @@ import ast
 
 
 app = Flask(__name__)
-app.debug = True
 
 trebleNotes = []
 bassNotes = []
@@ -72,12 +71,12 @@ def receive_arrays():
 def check_notes():
     for i in trebleNotes:
         a = note.Note(noteMap.get(i.get('y')))
-        a.quarterLength = 4
+        a.quarterLength = i.get('length') * 4
         global high
         high.append(a)
     for i in bassNotes:
         a = note.Note(noteMap.get(i.get('y')))
-        a.quarterLength = 4
+        a.quarterLength = i.get('length') * 4
         global low
         low.append(a)
     global treble
@@ -97,7 +96,6 @@ def check_notes():
             while (values[a] != 'No violations to report.' and values[a] != 'Function To Apply: parallelFifths'):    
                 mistakes.append(values[a])
                 a += 1
-            print(mistakes)
             for j in range(len(mistakes)):
                 mistakes[j] = re.sub(r'\s+', ' ', mistakes[j])
                 tuple_strs = mistakes[j].split(') (')
@@ -107,4 +105,4 @@ def check_notes():
     return jsonify (mistakes), 500
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
