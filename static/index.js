@@ -40,8 +40,8 @@ redWholeNote.onload = function() {
 }
 
 let submitted = false;
-let timeSigTop = 2;
-let timeSigBottom = 2;
+let timeSigTop = 1;
+let timeSigBottom = 1;
 let selectedVoice = 'treble';
 let barNoteLength = (timeSigTop * (1/timeSigBottom));
 let numOfBars = 6;
@@ -257,7 +257,7 @@ fetch('http://127.0.0.1:5000/receive-arrays', {
 }
 
 class Note {
-    constructor(x, y, width, height, length, selected, measure, value) {
+    constructor(x, y, width, height, length, selected, measure) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -265,7 +265,6 @@ class Note {
         this.length = length;
         this.selected = selected;
         this.measure = measure;
-        this.value = value;
     }
 }
 
@@ -444,17 +443,17 @@ function submit() {
                     console.log(data.length)
                     selectedVoice = voiceMap.get(data[i][2][0])
                     if (selectedVoice == 'treble') {
-                        trebleNotes[data[i][0][0]/4].selected = true;
+                        trebleNotes[data[i][0][0]/(trebleNotes[data[i][0][0]].length*4)].selected = true;
                     }
                     if (selectedVoice == 'bass') {
-                        bassNotes[data[i][0][0]/4].selected = true;
+                        bassNotes[data[i][0][0]/(trebleNotes[data[i][0][0]].length*4)].selected = true;
                     }
                     selectedVoice = voiceMap.get(data[i][2][1])
                     if (selectedVoice == 'treble') {
-                        trebleNotes[data[i][0][0]/4].selected = true;
+                        trebleNotes[data[i][0][0]/(trebleNotes[data[i][0][0]].length*4)].selected = true;
                     }
                     if (selectedVoice == 'bass') {
-                        bassNotes[data[i][0][0]/4].selected = true;
+                        bassNotes[data[i][0][0]/(trebleNotes[data[i][0][0]].length*4)].selected = true;
                     }
                 }
                 drawObject();

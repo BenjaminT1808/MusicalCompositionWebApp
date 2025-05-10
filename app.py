@@ -69,23 +69,24 @@ def receive_arrays():
 
 @app.route('/check-notes/', methods=['GET'])
 def check_notes():
+    newHigh = stream.Voice()
     for i in trebleNotes:
         a = note.Note(noteMap.get(i.get('y')))
         a.quarterLength = i.get('length') * 4
-        global high
-        high.append(a)
+        newHigh.append(a)
+    newLow = stream.Voice()
     for i in bassNotes:
         a = note.Note(noteMap.get(i.get('y')))
         a.quarterLength = i.get('length') * 4
-        global low
-        low.append(a)
-    global treble
-    treble.append(high)
-    global bass
-    bass.append(low)
+        newLow.append(a)
+    newTreble = stream.Part()
+    newTreble.append(newHigh)
+    newBass = stream.Part()
+    newBass.append(newLow)
     global score
-    score.insert(0, treble)
-    score.insert(0, bass)
+    score.clear()
+    score.insert(0, newTreble)
+    score.insert(0, newBass)
     checker.checkConsecutivePossibilities(music21Stream=score, functionToApply=para_oct, debug=True)
     checker.checkConsecutivePossibilities(music21Stream=score, functionToApply=para_fifth, debug=True)
     sys.stdout = original_stdout
@@ -97,6 +98,7 @@ def check_notes():
                 mistakes.append(values[a])
                 a += 1
             for j in range(len(mistakes)):
+                print(mistakes[j])
                 mistakes[j] = re.sub(r'\s+', ' ', mistakes[j])
                 tuple_strs = mistakes[j].split(') (')
                 cleaned_tuples = [ast.literal_eval(tup.replace('(', '').replace(')', ',')) for tup in tuple_strs]
