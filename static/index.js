@@ -40,8 +40,8 @@ redWholeNote.onload = function() {
 }
 
 let submitted = false;
-let timeSigTop = 1;
-let timeSigBottom = 1;
+let timeSigTop = 2;
+let timeSigBottom = 2;
 let selectedVoice = 'treble';
 let barNoteLength = (timeSigTop * (1/timeSigBottom));
 let numOfBars = 6;
@@ -270,10 +270,12 @@ class Note {
 
 for (let i = 0; i < (numOfBars * timeSigTop); i ++) {
     let initTrebleNote = new Note(place, 117, 75, 75, (1/timeSigBottom), false, currentMeasure);
-    let initBassNote = new Note(place, 220, 75, 75, (1/timeSigBottom), false, currentMeasure);
+    if (i % 2 == 0) {
+        let initBassNote = new Note(place, 220, 75, 75, 1, false, currentMeasure);
+        bassNotes.push(initBassNote)
+    }
     measureFull += initTrebleNote.length;
     trebleNotes.push(initTrebleNote);
-    bassNotes.push(initBassNote);
     if (measureFull == barNoteLength) {
         currentMeasure++;
         place = bars[currentMeasure];
@@ -313,7 +315,7 @@ function convertToQuarterNote() {
     }
 }
 
-document.addEventListener('keydown', (e) => {
+function keydown(e) {
     switch (e.key) {
         case 'ArrowUp':
             moveObject('up');
@@ -334,7 +336,9 @@ document.addEventListener('keydown', (e) => {
             selectNote('bass');
             break;
     }  
-});
+}
+
+document.addEventListener('keydown', keydown) // Event listener for the previous function
 
 function moveObject(direction) {
     switch (direction) {
@@ -457,9 +461,9 @@ function submit() {
                     }
                 }
                 drawObject();
-            })
+                document.removeEventListener('keydown', keydown)
+            }) 
             .catch(error => console.error('Error fetching data:', error));
-    document.removeEventListener('keydown', (e))
 }
 
 drawObject();
