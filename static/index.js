@@ -412,16 +412,30 @@ function selectNote(direction) {
             break;
         case 'treble':
             if (selectedVoice != 'treble') {
+                x = bassNotes[selectedNote].measure 
                 bassNotes[selectedNote].selected = false;
-                trebleNotes[selectedNote].selected = true;
+                for (let i = 0; i < trebleNotes.length; i += 1) {
+                    if (trebleNotes[i].measure == x) {
+                        trebleNotes[i].selected = true;
+                        selectedNote = i;
+                        break
+                    }
+                }
                 selectedVoice = 'treble';
             }
             drawObject();
             break;
         case 'bass':
             if (selectedVoice != 'bass') {
+                x = trebleNotes[selectedNote].measure
                 trebleNotes[selectedNote].selected = false;
-                bassNotes[selectedNote].selected = true;
+                for (let i = 0; i < bassNotes.length; i += 1) {
+                    if (bassNotes[i].measure == x) {
+                        bassNotes[i].selected = true;
+                        selectedNote = i;
+                        break
+                    }
+                }
                 selectedVoice = 'bass';
             }
             drawObject();
